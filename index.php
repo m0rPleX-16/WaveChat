@@ -81,7 +81,7 @@
 
 <?php
 session_start();
-require_once '../includes/db.php';
+require_once 'includes/DBconnection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['role'] = $user['role'];
-        header('Location: admin.php');
+        header('Location: admin/admin.php');
     } else {
         $error = 'Invalid username or password.';
     }
