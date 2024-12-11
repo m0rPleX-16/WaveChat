@@ -1,0 +1,37 @@
+body {
+    background: linear-gradient(150deg, #285260, #b4d7d8);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family:  'Poppins', sans-serif;
+}
+.register-card {
+    max-width: 600px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background-color: #E0D7CF;
+}
+.register-card .card-body {
+    padding: 2rem;
+}
+.register-card .form-control {
+    border-radius: 10px;
+    background-color: #FCF7F2;
+}
+.register-card .btn-primary {
+    border-radius: 10px;
+    background: #285260;
+    border: none;
+    transition: background 0.3s ease;
+}
+.register-card .btn-primary:hover {
+    background: #548C92;
+}
+.text-muted {
+    font-size: 0.9rem;
+}

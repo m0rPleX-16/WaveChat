@@ -1,110 +1,191 @@
 <?php
-require_once '../includes/DBconnection.php';
-require_once '../send_sms.php';
+session_start();
 
-// Fetch conversations
-$conversations = $conn->query("SELECT * FROM conversations")->fetch_all(MYSQLI_ASSOC);
-
-// Handle SMS sending
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $message = $_POST['message'];
-    $conversation_id = $_POST['conversation_id'];
-
-    // Get recipients
-    $recipients = $conn->query("SELECT u.phone_number, u.student_id 
-        FROM conversation_members cm 
-        JOIN users u ON cm.user_id = u.id 
-        WHERE cm.conversation_id = $conversation_id")->fetch_all(MYSQLI_ASSOC);
-
-    foreach ($recipients as $recipient) {
-        if (sendSMS($recipient['phone_number'], $message)) {
-            $conn->query("INSERT INTO sms_logs (student_id, message, conversation_id) 
-                VALUES ('{$recipient['student_id']}', '$message', $conversation_id)");
-        }
-    }
-    $success = 'Message sent successfully!';
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../index.php");
+    exit();
 }
+
+require '../db.php';
+
+$database = new db();
+$conn = $database->getConnection();
+
+$recentPrivateQuery = "SELECT message, date_sent FROM private_sms_tbl ORDER BY date_sent DESC LIMIT 5";
+$recentPrivateResult = $conn->query($recentPrivateQuery);
+$recentPrivate = $recentPrivateResult->fetch_all(MYSQLI_ASSOC);
+
+$recentPublicQuery = "SELECT message, date_sent FROM public_sms_tbl ORDER BY date_sent DESC LIMIT 5";
+$recentPublicResult = $conn->query($recentPublicQuery);
+$recentPublic = $recentPublicResult->fetch_all(MYSQLI_ASSOC);
+
+$recentStudentsQuery = "SELECT first_name, middle_name, last_name FROM student_tbl ORDER BY student_id DESC LIMIT 5";
+$recentStudentsResult = $conn->query($recentStudentsQuery);
+$recentStudents = $recentStudentsResult->fetch_all(MYSQLI_ASSOC);
+
+$studentsCountQuery = "SELECT COUNT(*) FROM student_tbl";
+$studentsCountResult = $conn->query($studentsCountQuery);
+$studentsCount = $studentsCountResult->fetch_row()[0];
+
+$programsCountQuery = "SELECT COUNT(*) FROM programs_tbl";
+$programsCountResult = $conn->query($programsCountQuery);
+$programsCount = $programsCountResult->fetch_row()[0];
+
+$messagesCountQuery = "SELECT COUNT(*) FROM private_sms_tbl";
+$messagesCountResult = $conn->query($messagesCountQuery);
+$messagesCount = $messagesCountResult->fetch_row()[0];
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .sidebar {
-            width: 300px;
-            background: #343a40;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-head {
-            padding: 15px;
-            border-bottom: 1px solid #495057;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .chat-head:hover {
-            background: #495057;
-        }
-        .chat-head img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .main-content {
-            flex: 1;
-            padding: 20px;
-        }
-    </style>
+    <title>WaveChat - Admin Dashboard</title>
+    <link rel="stylesheet" href='../css/bootstrap.css'>
+    <link rel="stylesheet" href='css/style.css'>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h4 class="p-3">Conversations</h4>
-        <?php foreach ($conversations as $conversation): ?>
-            <div class="chat-head" data-conversation-id="<?= $conversation['id'] ?>">
-                <img src="<?= $conversation['type'] === 'group' ? 'group_icon.png' : 'user_icon.png' ?>" alt="Avatar">
-                <span><?= htmlspecialchars($conversation['name']) ?></span>
-            </div>
-        <?php endforeach; ?>
-    </div>
-
-    <!-- Main Content -->
     <div class="main-content">
-        <h3>Send SMS</h3>
-        <?php if (isset($success)): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
-        <form method="POST">
-            <input type="hidden" name="conversation_id" id="conversation_id" value="">
-            <div class="mb-3">
-                <label for="message" class="form-label">Message</label>
-                <textarea name="message" id="message" class="form-control" rows="4" placeholder="Enter your message" required></textarea>
+        <h2 class="mb-4" style="color: white">Welcome, Adminstrator</h2>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">Recent Private SMS</div>
+                    <div class="card-body" id="recentPrivateMessages">
+                        <ul>
+                            <?php foreach ($recentPrivate as $sms): ?>
+                                <li>
+                                    <strong>Message:</strong> <?= htmlspecialchars($sms['message']) ?>
+                                    <br>
+                                    <small><strong>Date Sent:</strong> <?= $sms['date_sent'] ?></small>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Recent Public SMS</div>
+                    <div class="card-body" id="recentPublicMessages">
+                        <ul>
+                            <?php foreach ($recentPublic as $sms): ?>
+                                <li>
+                                    <strong>Message:</strong> <?= htmlspecialchars($sms['message']) ?>
+                                    <br>
+                                    <small><strong>Date Sent:</strong> <?= $sms['date_sent'] ?></small>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Recent Registered Students</div>
+                    <div class="card-body" id="recentPublicMessages">
+                        <ul>
+                            <?php foreach ($recentStudents as $student): ?>
+                                <li>
+                                    <strong>Full Name:</strong> <?= htmlspecialchars($student['first_name']) ?>
+                                    <?= htmlspecialchars($student['middle_name']) ?>
+                                    <?= htmlspecialchars($student['last_name']) ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-        </form>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">System Overview</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Total Students:</strong> <?= $studentsCount ?></li>
+                            <li><strong>Total Programs:</strong> <?= $programsCount ?></li>
+                            <li><strong>Total SMS Sent:</strong> <?= $messagesCount ?></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Add New Program</div>
+                    <div class="card-body">
+                        <form id="addProgramForm">
+                            <div class="mb-3">
+                                <label for="programName" class="form-label">Program Name</label>
+                                <input type="text" class="form-control" id="programName" name="programName"
+                                    placeholder="Enter Program Name (e.g., BSIT)" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom">Add Program</button>
+                        </form>
+                        <div id="programMessage" class="mt-2"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Quick Actions</div>
+                    <div class="card-body">
+                        <a href="send_private_sms.php" class="btn btn-custom">Send Private SMS</a>
+                        <a href="send_public_sms.php" class="btn btn-custom mt-3">Send Public SMS</a>
+                        <a href="#" id="logoutButton" class="btn btn-custom mt-3">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to log out?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="../logout.php" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const chatHeads = document.querySelectorAll('.chat-head');
-        chatHeads.forEach(chatHead => {
-            chatHead.addEventListener('click', () => {
-                const conversationId = chatHead.getAttribute('data-conversation-id');
-                document.getElementById('conversation_id').value = conversationId;
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            var logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
+            logoutModal.show();
+        });
+
+        document.getElementById('addProgramForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var programName = document.getElementById('programName').value;
+            $.ajax({
+                url: 'add_program.php',
+                type: 'POST',
+                data: { programName: programName },
+                dataType: 'json',
+                success: function (response) {
+                    var messageDiv = document.getElementById('programMessage');
+                    if (response.status === 'success') {
+                        messageDiv.innerHTML = '<div class="alert alert-success">' + response.message + '</div>';
+                        document.getElementById('programName').value = '';
+                    } else {
+                        messageDiv.innerHTML = '<div class="alert alert-danger">' + response.message + '</div>';
+                    }
+                },
+                error: function () {
+                    var messageDiv = document.getElementById('programMessage');
+                    messageDiv.innerHTML = '<div class="alert alert-danger">An error occurred while adding the program. Please try again.</div>';
+                }
             });
         });
     </script>
 </body>
+
 </html>
