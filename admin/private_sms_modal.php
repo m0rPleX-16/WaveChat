@@ -80,7 +80,6 @@ try {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,100 +93,78 @@ try {
             justify-content: center;
             align-items: center;
             font-family: 'Arial', sans-serif;
+            color: #fff;
         }
-
-        .card {
-            background: #fff;
-            color: #333;
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .form-label {
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
         .btn-primary {
-            background: #2575fc;
+            background-color: #2575fc;
             border: none;
             transition: background-color 0.3s ease;
         }
-
         .btn-primary:hover {
-            background: #1b5bbf;
+            background-color: #1b5bbf;
         }
-
-        .btn-close {
-            color: #666;
-            opacity: 0.8;
-        }
-
-        .btn-close:hover {
-            color: #333;
-            opacity: 1;
-        }
-
-        .back-button {
-            text-decoration: none;
-            color: #666;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .back-button:hover {
-            color: #333;
-        }
-
         .modal-content {
-            border-radius: 8px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .modal-header {
+            background: #2575fc;
+            color: #fff;
+            border-bottom: none;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .form-label {
+            font-weight: 600;
         }
     </style>
 </head>
-
 <body>
-    <div class="card">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Send Student SMS</h2>
-            <a href="admin.php" class="back-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-arrow-left me-2" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z" />
-                </svg>
-                Back
-            </a>
-        </div>
-        <form action="send_private_sms.php" method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="student_id" class="form-label">Select Student</label>
-                <select name="student_id" id="student_id" class="form-select" required>
-                    <option value="" disabled selected>Select a student</option>
-                    <?php foreach ($students as $student): ?>
-                        <option value="<?= htmlspecialchars($student['student_id']) ?>">
-                            <?= htmlspecialchars($student['full_name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="message" class="form-label">Message</label>
-                <textarea name="message" id="message" class="form-control" rows="4"
-                    placeholder="Write your message here..." required></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="attachment" class="form-label">Attachment (Optional)</label>
-                <input type="file" name="attachment" id="attachment" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Send SMS</button>
-        </form>
+    <div class="container text-center">
+        <h1 class="mb-4">Send SMS</h1>
+        <!-- Button to trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sendSMSModal">
+            Open Send SMS Form
+        </button>
     </div>
 
-    <!-- Modals -->
+    <!-- Modal -->
+    <div class="modal fade" id="sendSMSModal" tabindex="-1" aria-labelledby="sendSMSModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sendSMSModalLabel">Send SMS</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="send_private_sms.php" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label">Select Student</label>
+                            <select name="student_id" id="student_id" class="form-select" required>
+                                <option value="" disabled selected>Select a student</option>
+                                <?php foreach ($students as $student): ?>
+                                    <option value="<?= htmlspecialchars($student['student_id']) ?>">
+                                        <?= htmlspecialchars($student['full_name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea name="message" id="message" class="form-control" rows="4" placeholder="Write your message here..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attachment" class="form-label">Attachment (Optional)</label>
+                            <input type="file" name="attachment" id="attachment" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Send SMS</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for Success/Error Messages -->
     <?= $messageModal ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -203,5 +180,4 @@ try {
         });
     </script>
 </body>
-
 </html>

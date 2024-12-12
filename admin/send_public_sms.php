@@ -83,53 +83,129 @@ try {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Send Public SMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Send Public SMS</h1>
-    <form action="send_public_sms.php" method="POST">
-        <div class="mb-3">
-            <label for="program_id" class="form-label">Select Course</label>
-            <select name="program_id" id="program_id" class="form-select" required>
-                <option value="" disabled selected>Select a course</option>
-                <?php foreach ($programs as $program): ?>
-                    <option value="<?= htmlspecialchars($program['program_id']) ?>">
-                        <?= htmlspecialchars($program['program_name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="message" class="form-label">Message</label>
-            <textarea name="message" id="message" class="form-control" rows="4" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Send SMS</button>
-    </form>
-</div>
-
-<!-- Modals -->
-<?= $messageModal ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Show modal if it exists
-    document.addEventListener('DOMContentLoaded', function () {
-        const successModal = document.getElementById('successModal');
-        const errorModal = document.getElementById('errorModal');
-        if (successModal) {
-            new bootstrap.Modal(successModal).show();
-        } else if (errorModal) {
-            new bootstrap.Modal(errorModal).show();
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
         }
-    });
-</script>
+
+        .card {
+            background: #fff;
+            color: #333;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .btn-primary {
+            background: #2575fc;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #1b5bbf;
+        }
+
+        .btn-close {
+            color: #666;
+            opacity: 0.8;
+        }
+
+        .btn-close:hover {
+            color: #333;
+            opacity: 1;
+        }
+
+        .back-button {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .back-button:hover {
+            color: #333;
+        }
+
+        .modal-content {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Send Course SMS</h2>
+            <a href="admin.php" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-arrow-left me-2" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z" />
+                </svg>
+                Back
+            </a>
+        </div>
+
+        <form action="send_public_sms.php" method="POST">
+            <div class="mb-3">
+                <label for="program_id" class="form-label">Select Course</label>
+                <select name="program_id" id="program_id" class="form-select" required>
+                    <option value="" disabled selected>Select a course</option>
+                    <?php foreach ($programs as $program): ?>
+                        <option value="<?= htmlspecialchars($program['program_id']) ?>">
+                            <?= htmlspecialchars($program['program_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label">Message</label>
+                <textarea name="message" id="message" class="form-control" rows="4"
+                    placeholder="Write your message here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Send SMS</button>
+        </form>
+    </div>
+
+    <!-- Modals -->
+    <?= $messageModal ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show modal if it exists
+        document.addEventListener('DOMContentLoaded', function () {
+            const successModal = document.getElementById('successModal');
+            const errorModal = document.getElementById('errorModal');
+            if (successModal) {
+                new bootstrap.Modal(successModal).show();
+            } else if (errorModal) {
+                new bootstrap.Modal(errorModal).show();
+            }
+        });
+    </script>
 </body>
+
 </html>
