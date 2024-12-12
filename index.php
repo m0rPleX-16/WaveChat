@@ -4,17 +4,21 @@ session_start();
 if (isset($_SESSION['admin_id'])) {
     header("Location: admin/admin.php");
     exit();
+} elseif (isset($_SESSION['student_id'])) {
+    header("Location: student/student_dashboard.php");
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     require 'db.php';
-    
+
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     $database = new db();
     $conn = $database->getConnection();
 
+    // Check if the user is an admin
     $stmt = $conn->prepare("SELECT * FROM admin_tbl WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -27,9 +31,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         header("Location: admin/admin.php");
         exit();
-    } else {
-        $error_message = "Invalid username or password.";
     }
+
+    $stmt = $conn->prepare("SELECT * FROM student_tbl WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $student = $result->fetch_assoc();
+
+    if ($student && password_verify($password, $student['password'])) {
+        $_SESSION['student_id'] = $student['student_id'];
+        $_SESSION['username'] = $student['username'];
+
+        header("Location: student/student.php");
+        exit();
+    }
+
+    $error_message = "Invalid username or password.";
 }
 ?>
 

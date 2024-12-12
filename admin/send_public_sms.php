@@ -93,7 +93,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(150deg, #285260, #b4d7d8);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -102,8 +102,8 @@ try {
         }
 
         .card {
-            background: #fff;
-            color: #333;
+            background-color: #E0D7CF;
+            color: #285260;
             border-radius: 12px;
             padding: 20px;
             max-width: 500px;
@@ -117,13 +117,13 @@ try {
         }
 
         .btn-primary {
-            background: #2575fc;
+            background-color: #285260;
             border: none;
             transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background: #1b5bbf;
+            background-color: #548C92;
         }
 
         .btn-close {
