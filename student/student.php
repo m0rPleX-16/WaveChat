@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['student_id'])) {
-    header("Location: login.php");
+    header("Location: ../index.php"); 
     exit();
 }
 
@@ -24,6 +24,7 @@ if ($result->num_rows > 0) {
 } else {
     $student_name = "Student";
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -144,22 +145,12 @@ if ($result->num_rows > 0) {
             <p>This is your dashboard where you can manage your courses, view notifications, and access messages.</p>
 
             <div class="row">
-                <!-- Example Cards -->
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Courses</h5>
-                            <p class="card-text">View and manage your enrolled courses.</p>
-                            <a href="#" class="btn btn-primary">View Courses</a>
-                        </div>
-                    </div>
-                </div>
                 <div class="col-md-4">
                     <div class="card text-center">
                         <div class="card-body">
                             <h5 class="card-title">Notifications</h5>
                             <p class="card-text">Stay updated with the latest notifications.</p>
-                            <a href="#" class="btn btn-primary">View Notifications</a>
+                            <a href="notifications.php" class="btn btn-primary">View Notifications</a>
                         </div>
                     </div>
                 </div>
@@ -168,7 +159,7 @@ if ($result->num_rows > 0) {
                         <div class="card-body">
                             <h5 class="card-title">Messages</h5>
                             <p class="card-text">Check your messages and communicate.</p>
-                            <a href="#" class="btn btn-primary">View Messages</a>
+                            <a href="messages.php" class="btn btn-primary">View Messages</a>
                         </div>
                     </div>
                 </div>

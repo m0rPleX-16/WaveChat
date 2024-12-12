@@ -61,7 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            background: linear-gradient(150deg, #285260, #b4d7d8);
+            background: url('assets/wavechat-background.png');
+            background-size: cover;
+            background-position:center;
             min-height: 100vh;
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -76,12 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             width: 100%;
         }
 
-        .login-card h2 {
-            font-size: 2rem;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #285260;
-        }
 
         .error-message {
             color: red;
@@ -103,10 +99,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .btn-custom:hover {
             background-color: #548C92;
         }
-
+        .btn-custom:focus{
+            border-color: #285260;
+            box-shadow: 0 0 0 0.25rem rgba(40, 82, 96, 0.25);
+        }
         .modal-header {
             background-color: #285260;
             color: #fff;
+        }
+        .form-control{
+            border-radius: 8px;
+        }
+        .form-control:focus{
+            color: #2E3F42;
+            border-color: #285260;
+            box-shadow: 0 0 0 0.25rem rgba(40, 82, 96, 0.25);
+            border-width: 3px;
+            outline: none;
         }
     </style>
 </head>
@@ -114,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="login-card">
-        <h2>WaveChat Login</h2>
+    <h2 class="text-center mb-4" style="color: #285260;"><b>WaveChat Login</b></h2>
 
         <?php if (isset($error_message)): ?>
             <div class="alert alert-danger error-message"><?= $error_message; ?></div>
@@ -131,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <button type="submit" class="btn btn-custom">Login</button>
             <div class="text-center mt-3">
-                <p class="text-muted">Don't have an account? <a href="register.php" class="text-decoration-none" style="color: #285260;"><i>Register</i></a></p>
+                <p class="text-muted">Don't have an account? <a href="register.php" class="text-decoration-none" style="color: #285260; font-weight: bold;"><i>Register</i></a></p>
             </div>
         </form>
     </div>

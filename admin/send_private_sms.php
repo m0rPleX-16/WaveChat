@@ -179,10 +179,6 @@ try {
                 <textarea name="message" id="message" class="form-control" rows="4"
                     placeholder="Write your message here..." required></textarea>
             </div>
-            <div class="mb-3">
-                <label for="attachment" class="form-label">Attachment (Optional)</label>
-                <input type="file" name="attachment" id="attachment" class="form-control">
-            </div>
             <button type="submit" class="btn btn-primary w-100">Send SMS</button>
         </form>
     </div>

@@ -47,6 +47,15 @@
         text-align: center;
     }
 
+    .sidebar .badge {
+        background: #ff0000;
+        color: #fff;
+        font-size: 12px;
+        border-radius: 50%;
+        padding: 3px 7px;
+        animation: pulse 1.5s infinite;
+    }
+
     .sidebar.collapsed .nav-link span {
         display: none;
     }
@@ -55,32 +64,43 @@
         background-color: #E0D7CF;
         font-family: 'Poppins', sans-serif;
     }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+    }
 </style>
 <nav class="sidebar" id="sidebar">
     <div class="toggle-btn" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </div>
-    <a href="student.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'student.php' ? 'active' : ''; ?>">
+    <a href="student.php"
+        class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'student.php' ? 'active' : ''; ?>">
         <i class="fas fa-home"></i>
         <span>Dashboard</span>
     </a>
-    <a href="#" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
-        <i class="fas fa-user"></i>
-        <span>Profile</span>
-    </a>
-    <a href="#" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'courses.php' ? 'active' : ''; ?>">
-        <i class="fas fa-book"></i>
-        <span>Courses</span>
-    </a>
-    <a href="#" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'notifications.php' ? 'active' : ''; ?>">
+    <a href="notifications.php"
+        class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'notifications.php' ? 'active' : '' ?>">
         <i class="fas fa-bell"></i>
         <span>Notifications</span>
+        <?php if ($notification_count > 0): ?>
+            <span class="badge"><?= $notification_count ?></span>
+        <?php endif; ?>
     </a>
-    <a href="messages.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'messages.php' ? 'active' : ''; ?>">
+    <a href="messages.php"
+        class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'messages.php' ? 'active' : ''; ?>">
         <i class="fas fa-envelope"></i>
         <span>Messages</span>
     </a>
-    <a href="../logout.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'logout.php' ? 'active' : ''; ?>">
+    <a href="../logout.php"
+        class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'logout.php' ? 'active' : ''; ?>">
         <i class="fas fa-sign-out-alt"></i>
         <span>Logout</span>
     </a>

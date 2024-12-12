@@ -1,5 +1,5 @@
 body {
-    background: linear-gradient(150deg, #285260, #b4d7d8);
+    background: linear-gradient(150deg, #285260, #2E3F42);
     min-height: 100vh;
     margin: 0;
     font-family: 'Poppins', sans-serif;
@@ -61,7 +61,7 @@ body {
 }
 
 .modal-header {
-    background-color: #2980b9;
+    background-color: #285260;
     color: #fff;
     text-transform: uppercase;
     padding: 15px;
@@ -74,4 +74,16 @@ body {
     padding: 20px;
     background-color: #ecf0f1;
     background-color: #E0D7CF;
+}
+
+#logoutButton {
+    background-color: #8A3B3C;
+}
+#logoutButton:hover {
+    color: white;
+    background-color: #7E1E20;
+}
+#programName:focus{
+    border-color: #285260;
+    box-shadow: 0 0 0 0.25rem rgba(40, 82, 96, 0.25);
 }

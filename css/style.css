@@ -1,5 +1,7 @@
 body {
-    background: linear-gradient(150deg, #285260, #b4d7d8);
+    background: url('../assets/wavechat-background-register.png');
+    background-size: cover;
+    background-position:center;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -21,7 +23,7 @@ body {
 }
 .register-card .form-control {
     border-radius: 10px;
-    background-color: #FCF7F2;
+    background-color: #FFFDFB;
 }
 .register-card .btn-primary {
     border-radius: 10px;
@@ -29,9 +31,40 @@ body {
     border: none;
     transition: background 0.3s ease;
 }
+.register-card .form-select {
+    width: 100%;  
+    border-radius: 8px;
+    background-color: #FFFDFB; 
+    padding: 0.375rem 0.75rem;  
+    font-size: 1rem;  
+    border: 1px solid #ced4da;  
+    color: gray;
+}
+.register-card .form-select option {
+    color: black;
+}
+.register-card .form-select option:hover {
+    background-color: #285260; 
+    color: white;
+}
 .register-card .btn-primary:hover {
     background: #548C92;
 }
 .text-muted {
     font-size: 0.9rem;
+}
+
+.form-control{
+    border-radius: 8px;
+}
+.form-control:focus{
+    color: #2E3F42;
+    border-color: #285260;
+    box-shadow: 0 0 0 0.25rem rgba(40, 82, 96, 0.25);
+    border-width: 3px;
+    outline: none;
+}
+.btn-primary:focus{
+    border-color: #285260;
+    box-shadow: 0 0 0 0.25rem rgba(40, 82, 96, 0.25);
 }

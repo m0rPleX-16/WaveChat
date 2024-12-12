@@ -50,7 +50,7 @@ $messagesCount = $messagesCountResult->fetch_row()[0];
 
 <body>
     <div class="main-content">
-        <h2 class="mb-4" style="color: white">Welcome, Adminstrator</h2>
+        <h2 class="mb-4" style="color: white">Welcome, Administrator</h2>
         <div class="row">
             <div class="col-lg-8">
                 <div class="card">
@@ -83,7 +83,7 @@ $messagesCount = $messagesCountResult->fetch_row()[0];
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header">Recent Registered Students</div>
+                    <div class="card-header">Recently Registered Students</div>
                     <div class="card-body" id="recentPublicMessages">
                         <ul>
                             <?php foreach ($recentStudents as $student): ?>
@@ -114,7 +114,7 @@ $messagesCount = $messagesCountResult->fetch_row()[0];
                     <div class="card-body">
                         <form id="addProgramForm">
                             <div class="mb-3">
-                                <label for="programName" class="form-label">Program Name</label>
+                                <label for="programName" class="form-label" >Program Name</label>
                                 <input type="text" class="form-control" id="programName" name="programName"
                                     placeholder="Enter Program Name (e.g., BSIT)" required>
                             </div>
@@ -129,9 +129,10 @@ $messagesCount = $messagesCountResult->fetch_row()[0];
                     <div class="card-body">
                         <a href="send_private_sms.php" class="btn btn-custom">Send Private SMS</a>
                         <a href="send_public_sms.php" class="btn btn-custom mt-3">Send Public SMS</a>
-                        <a href="#" id="logoutButton" class="btn btn-custom mt-3">Logout</a>
+                       
                     </div>
                 </div>
+                <a href="#" id="logoutButton" class="btn btn-custom mt-3">Logout</a>
             </div>
         </div>
     </div>
@@ -144,11 +145,11 @@ $messagesCount = $messagesCountResult->fetch_row()[0];
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to log out?
+                    Do you want to log out?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../logout.php" class="btn btn-danger">Logout</a>
+                    <a href="../logout.php" class="btn btn-danger" id="confirmLogout">Logout</a>
                 </div>
             </div>
         </div>

@@ -17,7 +17,7 @@
 <body>
     <div class="card register-card">
         <div class="card-body">
-            <h3 class="text-center mb-4" style="color: #285260;"><b>Student Register</b></h3>
+            <h3 class="text-center mb-4" style="color: #285260;"><b>Student Registration</b></h3>
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
@@ -54,7 +54,7 @@
                         <div class="mb-3">
                             <label for="middlename" class="form-label">Middle Name</label>
                             <input type="text" class="form-control" id="middlename" name="middlename"
-                                placeholder="Enter your middle name">
+                                placeholder="Enter your middle name" required>
                         </div>
                         <div class="mb-3">
                             <label for="phone_number" class="form-label">Phone Number</label>
@@ -63,7 +63,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="program" class="form-label">Program</label>
-                            <select class="form-select" id="programDropdown" name="program" required>
+                            <select class="form-select w-100" id="programDropdown" name="program" required>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -82,7 +82,7 @@
             </form>
             <div class="text-center mt-3">
                 <p class="text-muted">Already have an account? <a href="index.php" class="text-decoration-none"
-                        style="color: #285260;"><i>Login</i></a></p>
+                        style="color: #285260; font-weight:bold;"><i>Login</i></a></p>
             </div>
         </div>
     </div>
@@ -117,7 +117,6 @@
 </body>
 
 </html>
-
 
 <?php
 require_once 'db.php';

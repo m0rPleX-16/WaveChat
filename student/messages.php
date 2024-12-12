@@ -88,20 +88,21 @@ try {
         .content {
             flex-grow: 1;
             padding: 20px;
-            background: #f8f9fa;
+            background: #FCF7F2;
         }
 
         .messages-container {
             max-width: 1200px;
             margin: auto;
             padding: 20px;
-            background: #fff;
+            background: #EDE4DB; 
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .message-card {
-            border: 1px solid #ddd;
+            background-color: #D4C7BC;
+            border: 3px solid #D4C7BC;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
@@ -109,6 +110,7 @@ try {
         }
 
         .message-card:hover {
+            background-color: #FCF2EA;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
@@ -119,6 +121,12 @@ try {
         .date-sent {
             color: #666;
             font-size: 0.9em;
+        }
+        h2 {
+            color: #2E3F42;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 900;
         }
     </style>
 </head>
@@ -135,7 +143,6 @@ try {
                     <div class="alert alert-info text-center">No messages found.</div>
                 <?php else: ?>
                     <div class="row">
-                        <!-- Public Messages -->
                         <div class="col-md-6">
                             <h4 class="text-center">Public Messages</h4>
                             <?php foreach ($messages as $message): ?>
