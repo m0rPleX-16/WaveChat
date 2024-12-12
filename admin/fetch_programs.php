@@ -5,6 +5,10 @@ require '../db.php';
 
 $database = new db();
 $conn = $database->getConnection();
+if ($conn === null) {
+    echo json_encode(['error' => 'Failed to establish database connection.']);
+    exit();
+}
 
 $query = "SELECT program_id, program_name FROM programs_tbl";
 

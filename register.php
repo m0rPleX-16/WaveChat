@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $school = htmlspecialchars(trim($_POST['school']));
     $year_level = htmlspecialchars(trim($_POST['year_level']));
 
-    $checkQuery = $conn->prepare('SELECT id FROM users WHERE username = ? OR student_id = ?');
+    $checkQuery = $conn->prepare('SELECT student_id FROM student_tbl WHERE username = ? OR student_id = ?');
     $checkQuery->bind_param('ss', $username, $student_id);
     $checkQuery->execute();
     $checkQuery->store_result();
@@ -147,12 +147,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($checkQuery->num_rows > 0) {
         $error = 'Username or Student ID already exists.';
     } else {
-        $stmt = $conn->prepare('INSERT INTO users (username, password, student_id, lastname, firstname, middlename, phone_number, program, school, year_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt = $conn->prepare('INSERT INTO student_tbl (username, password, student_id, last_name, first_name, middle_name, phone_number, program_id, school, year_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         if ($stmt) {
             $stmt->bind_param('ssssssssss', $username, $password, $student_id, $lastname, $firstname, $middlename, $phone_number, $program, $school, $year_level);
 
             if ($stmt->execute()) {
-                header('Location: index.php?success=1');
+                header('Location: register.php?success=1');
                 exit();
             } else {
                 $error = 'Registration failed. Try again.';
