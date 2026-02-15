@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['student_id'])) {
-    header("Location: ../index.php"); 
+    header("Location: ../index.php");
     exit();
 }
 
@@ -25,6 +25,28 @@ if ($result->num_rows > 0) {
     $student_name = "Student";
 }
 
+try {
+    $database = new db();
+    $conn = $database->getConnection();
+
+    $queryMessageCount = "
+        SELECT 
+            (SELECT COUNT(*) FROM public_sms_students_tbl pss 
+             INNER JOIN public_sms_tbl ps ON pss.public_sms_id = ps.public_sms_id 
+             WHERE pss.student_id = ?) AS public_count,
+            (SELECT COUNT(*) FROM private_sms_tbl p 
+             WHERE p.student_id = ?) AS private_count
+    ";
+
+    $stmt = $conn->prepare($queryMessageCount);
+    $stmt->bind_param("ii", $student_id, $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    $totalMessages = $result['public_count'] + $result['private_count'];
+} catch (Exception $e) {
+    $totalMessages = 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -143,27 +165,36 @@ if ($result->num_rows > 0) {
         <hr>
         <div>
             <p>This is your dashboard where you can manage your courses, view notifications, and access messages.</p>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Notifications</h5>
-                            <p class="card-text">Stay updated with the latest notifications.</p>
-                            <a href="notifications.php" class="btn btn-primary">View Notifications</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Messages</h5>
-                            <p class="card-text">Check your messages and communicate.</p>
-                            <a href="messages.php" class="btn btn-primary">View Messages</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <hr>
+            <h3>About the College</h3>
+            <p>The <b>College of Computing Education</b> maintains its reputation as one of the best computer schools in
+                the region through its PACUCOA Level III accredited programs as well as being
+                a certified Center of Development. The college is composed of highly qualified facultry members who are
+                skilled and equipped with the updated skills in different fields of computer studies.
+                The Computer Science and Information Technology program of the college is granted Center of Development
+                (COD) status be CHED. It has forged collaborations with Apple, Google, Microsoft, and IBM.</p>
+            <h4>Programs</h4>
+            <li>
+                Bachelor of Science in Information Technology
+            </li>
+            <li>
+                Bachelor of Science in Computer Science
+            </li>
+            <li>
+                Bachelor of Science in Information Systems
+            </li>
+            <li>
+                Bachelor of Library and Information Science
+            </li>
+            <li>
+                Bachelor of Science in Entertainment and Multimedia Computing - Digital Animation
+            </li>
+            <li>
+                Bachelor of Science in Entertainment and Multimedia Computing - Game Development
+            </li>
+            <li>
+                Bachelor of Multimedia Arts
+            </li>
         </div>
     </div>
 

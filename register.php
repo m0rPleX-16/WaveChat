@@ -1,3 +1,53 @@
+<?php
+require_once 'db.php';
+
+$database = new db();
+$conn = $database->getConnection();
+
+$error = ''; // Initialize error to avoid undefined variable
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Sanitize and validate inputs
+    $username = htmlspecialchars(trim($_POST['username']));
+    $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
+    $student_id = htmlspecialchars(trim($_POST['student_id']));
+    $lastname = htmlspecialchars(trim($_POST['lastname']));
+    $firstname = htmlspecialchars(trim($_POST['firstname']));
+    $middlename = htmlspecialchars(trim($_POST['middlename']));
+    $phone_number = htmlspecialchars(trim($_POST['phone_number']));
+    $program = htmlspecialchars(trim($_POST['program']));
+    $school = htmlspecialchars(trim($_POST['school']));
+    $year_level = htmlspecialchars(trim($_POST['year_level']));
+
+    // Check for duplicates
+    $checkQuery = $conn->prepare('SELECT student_id FROM student_tbl WHERE username = ? OR student_id = ?');
+    $checkQuery->bind_param('ss', $username, $student_id);
+    $checkQuery->execute();
+    $checkQuery->store_result();
+
+    if ($checkQuery->num_rows > 0) {
+        $error = 'Username or Student ID already exists.';
+    } else {
+        // Insert the data
+        $stmt = $conn->prepare('INSERT INTO student_tbl (username, password, student_id, last_name, first_name, middle_name, phone_number, program_id, school, year_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        if ($stmt) {
+            $stmt->bind_param('ssssssssss', $username, $password, $student_id, $lastname, $firstname, $middlename, $phone_number, $program, $school, $year_level);
+
+            if ($stmt->execute()) {
+                header('Location: register.php?success=1');
+                exit();
+            } else {
+                $error = 'Registration failed. Try again.';
+            }
+            $stmt->close();
+        } else {
+            $error = 'Database error: Could not prepare statement.';
+        }
+    }
+    $checkQuery->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +68,7 @@
     <div class="card register-card">
         <div class="card-body">
             <h3 class="text-center mb-4" style="color: #285260;"><b>Student Registration</b></h3>
-            <?php if (isset($error)): ?>
+            <?php if (!empty($error)): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
             <form method="POST">
@@ -64,6 +114,7 @@
                         <div class="mb-3">
                             <label for="program" class="form-label">Program</label>
                             <select class="form-select w-100" id="programDropdown" name="program" required>
+                                <option value="">Select Program</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -88,7 +139,6 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src='js/script.js'></script>
     <script>
         $(document).ready(function () {
             $.ajax({
@@ -96,19 +146,19 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
+                    const programDropdown = $('#programDropdown');
+                    programDropdown.empty();
+                    programDropdown.append('<option value="">Select Program</option>');
                     if (Array.isArray(data) && data.length > 0) {
-                        const programDropdown = $('#programDropdown');
-                        programDropdown.empty();
-                        programDropdown.append('<option value="">Select Program</option>');
                         data.forEach(function (program) {
                             programDropdown.append('<option value="' + program.program_id + '">' + program.program_name + '</option>');
                         });
                     } else {
-                        console.error('No programs found or invalid data.');
+                        programDropdown.append('<option value="">No programs available</option>');
                     }
                 },
                 error: function (error) {
-                    console.log('Error fetching programs:', error);
+                    console.error('Error fetching programs:', error);
                     alert('An error occurred while fetching programs.');
                 }
             });
@@ -117,50 +167,3 @@
 </body>
 
 </html>
-
-<?php
-require_once 'db.php';
-
-$database = new db();
-$conn = $database->getConnection();
-
-$error = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = htmlspecialchars(trim($_POST['username']));
-    $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
-    $student_id = htmlspecialchars(trim($_POST['student_id']));
-    $lastname = htmlspecialchars(trim($_POST['lastname']));
-    $firstname = htmlspecialchars(trim($_POST['firstname']));
-    $middlename = htmlspecialchars(trim($_POST['middlename']));
-    $phone_number = htmlspecialchars(trim($_POST['phone_number']));
-    $program = htmlspecialchars(trim($_POST['program']));
-    $school = htmlspecialchars(trim($_POST['school']));
-    $year_level = htmlspecialchars(trim($_POST['year_level']));
-
-    $checkQuery = $conn->prepare('SELECT student_id FROM student_tbl WHERE username = ? OR student_id = ?');
-    $checkQuery->bind_param('ss', $username, $student_id);
-    $checkQuery->execute();
-    $checkQuery->store_result();
-
-    if ($checkQuery->num_rows > 0) {
-        $error = 'Username or Student ID already exists.';
-    } else {
-        $stmt = $conn->prepare('INSERT INTO student_tbl (username, password, student_id, last_name, first_name, middle_name, phone_number, program_id, school, year_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        if ($stmt) {
-            $stmt->bind_param('ssssssssss', $username, $password, $student_id, $lastname, $firstname, $middlename, $phone_number, $program, $school, $year_level);
-
-            if ($stmt->execute()) {
-                header('Location: register.php?success=1');
-                exit();
-            } else {
-                $error = 'Registration failed. Try again.';
-            }
-            $stmt->close();
-        } else {
-            $error = 'Database error: Could not prepare statement.';
-        }
-    }
-    $checkQuery->close();
-}
-?>

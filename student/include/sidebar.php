@@ -1,3 +1,4 @@
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -86,18 +87,13 @@
         <i class="fas fa-home"></i>
         <span>Dashboard</span>
     </a>
-    <a href="notifications.php"
-        class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'notifications.php' ? 'active' : '' ?>">
-        <i class="fas fa-bell"></i>
-        <span>Notifications</span>
-        <?php if ($notification_count > 0): ?>
-            <span class="badge"><?= $notification_count ?></span>
-        <?php endif; ?>
-    </a>
     <a href="messages.php"
         class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'messages.php' ? 'active' : ''; ?>">
         <i class="fas fa-envelope"></i>
         <span>Messages</span>
+        <?php if ($totalMessages > 0): ?>
+            <span class="badge bg-danger"><?= $totalMessages ?></span>
+        <?php endif; ?>
     </a>
     <a href="../logout.php"
         class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'logout.php' ? 'active' : ''; ?>">

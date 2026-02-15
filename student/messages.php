@@ -39,18 +39,44 @@ try {
             p.student_id = ?
     ";
 
+    $queryPublicCount = "
+        SELECT COUNT(*) AS public_count 
+        FROM public_sms_students_tbl pss
+        INNER JOIN public_sms_tbl ps 
+        ON pss.public_sms_id = ps.public_sms_id
+        WHERE pss.student_id = ?
+    ";
+    $stmtPublicCount = $conn->prepare($queryPublicCount);
+    $stmtPublicCount->bind_param("i", $student_id);
+    $stmtPublicCount->execute();
+    $resultPublicCount = $stmtPublicCount->get_result();
+    $totalPublicCount = $resultPublicCount->fetch_assoc()['public_count'];
+
+    $queryPrivateCount = "
+        SELECT COUNT(*) AS private_count 
+        FROM private_sms_tbl
+        WHERE student_id = ?
+    ";
+    $stmtPrivateCount = $conn->prepare($queryPrivateCount);
+    $stmtPrivateCount->bind_param("i", $student_id);
+    $stmtPrivateCount->execute();
+    $resultPrivateCount = $stmtPrivateCount->get_result();
+    $totalPrivateCount = $resultPrivateCount->fetch_assoc()['private_count'];
+
+    // Fetch all public messages
     $stmtPublic = $conn->prepare($queryPublic);
     $stmtPublic->bind_param("i", $student_id);
     $stmtPublic->execute();
     $resultPublic = $stmtPublic->get_result();
 
+    // Fetch all private messages
     $stmtPrivate = $conn->prepare($queryPrivate);
     $stmtPrivate->bind_param("i", $student_id);
     $stmtPrivate->execute();
     $resultPrivate = $stmtPrivate->get_result();
 
+    // Combine messages
     $messages = [];
-
     while ($row = $resultPublic->fetch_assoc()) {
         $messages[] = $row;
     }
@@ -58,9 +84,36 @@ try {
         $messages[] = $row;
     }
 
+    // Sort messages by date_sent in descending order
     usort($messages, function ($a, $b) {
         return strtotime($b['date_sent']) - strtotime($a['date_sent']);
     });
+
+    
+try {
+    $database = new db();
+    $conn = $database->getConnection();
+
+    // Fetch total messages count (public + private)
+    $queryMessageCount = "
+        SELECT 
+            (SELECT COUNT(*) FROM public_sms_students_tbl pss 
+             INNER JOIN public_sms_tbl ps ON pss.public_sms_id = ps.public_sms_id 
+             WHERE pss.student_id = ?) AS public_count,
+            (SELECT COUNT(*) FROM private_sms_tbl p 
+             WHERE p.student_id = ?) AS private_count
+    ";
+
+    $stmt = $conn->prepare($queryMessageCount);
+    $stmt->bind_param("ii", $student_id, $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    $totalMessages = $result['public_count'] + $result['private_count'];
+} catch (Exception $e) {
+    $totalMessages = 0;
+}
+
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
 }
@@ -95,7 +148,7 @@ try {
             max-width: 1200px;
             margin: auto;
             padding: 20px;
-            background: #EDE4DB; 
+            background: #EDE4DB;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -122,11 +175,17 @@ try {
             color: #666;
             font-size: 0.9em;
         }
+
         h2 {
             color: #2E3F42;
             padding: 10px;
             border-radius: 5px;
             font-weight: 900;
+        }
+
+        .badge {
+            font-size: 1rem;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -143,8 +202,14 @@ try {
                     <div class="alert alert-info text-center">No messages found.</div>
                 <?php else: ?>
                     <div class="row">
+                        <!-- Public Messages -->
                         <div class="col-md-6">
-                            <h4 class="text-center">Public Messages</h4>
+                            <h4 class="text-center">
+                                Public Messages
+                                <span class="badge bg-info">
+                                    <?= $totalPublicCount ?>
+                                </span>
+                            </h4>
                             <?php foreach ($messages as $message): ?>
                                 <?php if ($message['type'] == 'public'): ?>
                                     <div class="message-card">
@@ -164,7 +229,12 @@ try {
 
                         <!-- Private Messages -->
                         <div class="col-md-6">
-                            <h4 class="text-center">Private Messages</h4>
+                            <h4 class="text-center">
+                                Private Messages
+                                <span class="badge bg-info">
+                                    <?= $totalPrivateCount ?>
+                                </span>
+                            </h4>
                             <?php foreach ($messages as $message): ?>
                                 <?php if ($message['type'] == 'private'): ?>
                                     <div class="message-card">

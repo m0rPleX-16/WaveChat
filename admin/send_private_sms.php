@@ -85,6 +85,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Send SMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -93,7 +94,7 @@ try {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         .card {
@@ -145,6 +146,13 @@ try {
 
         .modal-content {
             border-radius: 8px;
+        }
+        #message:focus ,#student_id:focus{
+    color: #2E3F42;
+    border-color: #285260;
+    box-shadow: 0 0 0 0.25rem rgba(40, 82, 96, 0.25);
+    border-width: 3px;
+    outline: none;
         }
     </style>
 </head>

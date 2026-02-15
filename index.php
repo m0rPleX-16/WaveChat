@@ -5,7 +5,7 @@ if (isset($_SESSION['admin_id'])) {
     header("Location: admin/admin.php");
     exit();
 } elseif (isset($_SESSION['student_id'])) {
-    header("Location: student/student_dashboard.php");
+    header("Location: student/student.php");
     exit();
 }
 
